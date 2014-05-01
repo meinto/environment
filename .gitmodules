@@ -1,0 +1,3 @@
+[submodule "Snap.svg"]
+	path = Snap.svg
+	url = https://github.com/tobiasMeinhardt/Snap.svg.git
