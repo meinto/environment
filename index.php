@@ -18,8 +18,6 @@
 			padding:20px;
 		}
 	</style>
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-	<script type="text/javascript" src="snap.svg.js"></script>
 </head>
 <body>
 	<svg id="environment"></svg>
@@ -30,7 +28,8 @@
 			<p>Windstärke und Windgeschwindigkeit: <span id="wind-intensity"></span>%</p>
 		</div>
 	</div>
-	<script type="text/javascript" src="gamecore.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script type="text/javascript" src="Snap.svg/dist/snap.svg.js"></script>
 	<script type="text/javascript" src="helper.js"></script>
 	<script type="text/javascript" src="environment.js"></script>
 	<script type="text/javascript" src="culm.js"></script>
