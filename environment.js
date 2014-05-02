@@ -5,7 +5,7 @@ function Environment(){
 	var windowWidth = $(window).width();
 	var windowHeight = $(window).height();
 
-	var drawingAreaId = '#environment';
+	var drawingAreaId = 'environment';
 	
 	// should only be manipulated via getter and setter methods
 	var drawingArea, drawingArea_right, drawingArea_left;
@@ -131,7 +131,7 @@ function Environment(){
 	 */
 	Environment.getDrawingArea = function(){
 		if(!drawingArea){
-			drawingArea = new Snap(drawingAreaId);
+			drawingArea = new SVG(drawingAreaId);
 		}
 		return drawingArea;
 	};

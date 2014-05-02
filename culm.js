@@ -115,7 +115,8 @@ function Culm(x, y) {
     };
 
     this.moveStatic = function(windDirectionIntensity){
-        Environment.getDrawingArea().path(getPath(windDirectionIntensity)).attr({fill: "blue"});
+        //console.log( Environment.getCulms()[0]);
+        Environment.getCulms()[0].path(getPath(windDirectionIntensity));
     }
 
     this.developMode = function(){
@@ -126,5 +127,13 @@ function Culm(x, y) {
         delete _this;
     }
     
-    this.obj = Environment.getDrawingArea().path(getPath()).attr({fill: "green"});
+    this.obj = Environment.getDrawingArea().path(getPath());
 }
+
+/********************************************
+ *  prototype : culm - inherits : path
+ ********************************************/
+Culm.prototype = inherit(Path.prototype);
+Culm.prototype.getObject = function(){
+    return this.obj;
+};

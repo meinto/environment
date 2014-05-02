@@ -20,7 +20,7 @@
 	</style>
 </head>
 <body>
-	<svg id="environment"></svg>
+	<svg id="environment" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 	<div id="log">
 		<div id="wind">
 			<h3>Wind</h3>
@@ -36,17 +36,17 @@
 	<script type="text/javascript" src="culm.js"></script>
 	<script type="text/javascript" src="wind.js"></script>
 	<script type="text/javascript">
-		var svg = new SVG('asd');
-		console.log(svg.drawingArea);
-		svg.path({path:'M62,645C61.008497846742834,575.4396623292718,58.1065202958578,535.6658320480066,60.10323101342054,451.2962940153623C61.33429807363557,535.6658320480066,66.2362756245206,575.4396623292718,62,645'});
+		//var svg = new SVG('asd');
+		//console.log(svg.drawingArea);
+		//svg.path('M62,645C61.008497846742834,575.4396623292718,58.1065202958578,535.6658320480066,60.10323101342054,451.2962940153623C61.33429807363557,535.6658320480066,66.2362756245206,575.4396623292718,62,645');
 
-		//var environment = new Environment();
+		var environment = new Environment();
 
 		//environment.drawCulm(200,400);
-		//Environment.getCulms()[0].moveStatic(-0.22);
+		//Environment.getCulms()[0].moveStatic(-0.9);
 		
 
-		//environment.drawLawn();
+		environment.drawLawn();
 		//environment.developMode();
 		//environment.prepareEndlessDrawingAreaX();
 		//environment.moveRight();
