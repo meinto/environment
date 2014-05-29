@@ -8,6 +8,17 @@ function inherit(proto) {
 	return new F;
 }
 
+window.requestAnimFrame = (function(){
+  return   window.requestAnimationFrame       ||
+	       window.webkitRequestAnimationFrame ||
+	       window.mozRequestAnimationFrame    ||
+	       window.oRequestAnimationFrame      ||
+	       window.msRequestAnimationFrame     ||
+	       function (callback) {
+	           setTimeout(callback, 16);
+	       };
+})();
+
 /* 
 ###################################################################### 
 ######################################################################
@@ -26,6 +37,7 @@ function SVG(id){
 SVG.prototype = {
 	drawingArea : document.getElementById('environment'),
 	svgNameSpace : 'http://www.w3.org/2000/svg',
+	xmlNameSpace : 'http://www.w3.org/2000/xmlns/',
 	type : 'svg',
 	setDrawingArea : function(id){
 		this.drawingArea = document.getElementById(id);
@@ -40,7 +52,12 @@ SVG.prototype = {
 		if($.type(options) == 'object')
 			p.attrs = $.extend({}, p.attrs, options); // pathOptions
 		p = p.draw();
-		return p;
+
+		pathString = null;
+		options = null;
+
+		if(this.type == 'svg')
+			return p;
 	}
 }
 
@@ -62,6 +79,7 @@ Path.count = 0;
  *	prototype : path - inherits : svg
  ********************************************/
 Path.prototype = inherit(SVG.prototype);
+Path.prototype.initialized = false;
 Path.prototype.type = 'path';
 Path.prototype._id = 'path-0';
 Path.prototype.attrs = {
@@ -80,14 +98,13 @@ Path.prototype.draw = function(){
 	}
 
 	p.setAttributeNS(null, 'd', this.pathString);
-	p.setAttributeNS(null, 'fill', this.attrs.fill);
 	
 	if(newPath){
+		p.setAttributeNS(null, 'fill', this.attrs.fill);
 		p.setAttributeNS(null, 'id', this._id);
 		this.drawingArea.appendChild(p);
+		return this;
 	}
-
-	return this;
 }
 
 /* 

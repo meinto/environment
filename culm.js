@@ -93,25 +93,91 @@ function Culm(x, y) {
         return p;
     }
 
-    this.move = function(windDirectionIntensity, animationTime) {
+    var currentAnimationPoint = null;
 
-        var _moveThis = this;
+    var anim_sign = 1;
+    var anim_a = 0.22;
+    var anim_b = 0.6;
+    var anim_c = 0;
+    var anim_d = 0;
 
-        this.windDirectionIntensity = windDirectionIntensity;
-        this.animationTime = animationTime;
+    var anim_inCalculation = false;
 
-        windDirectionIntensity = null;
-        animationTime = null;
+    function recalculateCurrentAnimationPoint(){
+        if(currentAnimationPoint == null || currentAnimationPoint > 10){
+            currentAnimationPoint = 0;
+        }else{
+            var new_x = (Math.asin(
+                        (currentAnimationPoint - anim_d) /
+                        anim_sign * Math.pow(2, -(x+(-((Math.log(anim_a)-(1/(2*anim_b))*Math.log(2))/Math.log(2))-1)))
+                    ) + anim_c) / anim_b;
 
-        var animationPath = getPath(this.windDirectionIntensity);
-        _this.obj.stop().animate({path: animationPath}, _moveThis.animationTime, function() {
-            var backToTheRootsPath = getPath();
-            _this.obj.stop().animate({path: backToTheRootsPath}, 4000, mina.elastic);
-        });
+            if(new_x > 1/anim_b)
+                new_x = new_x - 1/anim_b;
 
-        this.windDirectionIntensity = null;
-        this.animationTime = null;
-        _moveThis = null;
+            currentAnimationPoint = new_x;
+            new_x = null;
+        }
+    }
+
+    function recalculateAnimParams(sign, a){
+        anim_inCalculation = true;
+
+        anim_sign = sign;
+        anim_a = a;
+        // anim_b = b;
+        // anim_c = c;
+        // anim_d = d;
+
+        recalculateCurrentAnimationPoint();
+
+        anim_inCalculation = false;
+    }
+
+    function getAnimationPoint (x){
+        return (Math.floor((
+            //-(1/Math.PI)*(Math.log(anim_a)/Math.log(2))
+            //anim_sign * Math.pow(2, -(x+(-(1/Math.PI)*(Math.log(anim_a)/Math.log(2)))-1)) * Math.sin(anim_b * Math.PI * x - anim_c) + anim_d
+            //anim_sign * Math.pow(2, -(x+(-(Math.log(anim_a)/Math.log(2))-1))) * Math.sin(anim_b * Math.PI * x - anim_c) + anim_d
+            anim_sign * Math.pow(2, -(x+(-((Math.log(anim_a)-(1/(2*anim_b))*Math.log(2))/Math.log(2))-1))) * Math.sin(anim_b * Math.PI * x - anim_c) + anim_d
+            )*1000000)/1000000
+        );
+    }
+
+    function animate(){
+        if(!anim_inCalculation && currentAnimationPoint != null){
+            //if(getAnimationPoint(currentAnimationPoint) > anim_a)
+               // console.log(getAnimationPoint(currentAnimationPoint));
+            //_this.obj.path(getPath(getAnimationPoint(currentAnimationPoint)));
+            var p = getPath(getAnimationPoint(currentAnimationPoint));
+            _this.obj.path(p);
+            if(currentAnimationPoint < 10){
+                currentAnimationPoint = currentAnimationPoint + 0.1;
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    this.move = function(windIntensity, windDirection, animationTime) {
+        recalculateAnimParams(windDirection, windIntensity);
+    //     var _moveThis = this;
+
+    //     this.windDirectionIntensity = windDirectionIntensity;
+    //     this.animationTime = animationTime;
+
+    //     windDirectionIntensity = null;
+    //     animationTime = null;
+
+    //     var animationPath = getPath(this.windDirectionIntensity);
+    //     _this.obj.stop().animate({path: animationPath}, _moveThis.animationTime, function() {
+    //         var backToTheRootsPath = getPath();
+    //         _this.obj.stop().animate({path: backToTheRootsPath}, 4000, mina.elastic);
+    //     });
+
+    //     this.windDirectionIntensity = null;
+    //     this.animationTime = null;
+    //     _moveThis = null;
     };
 
     this.moveStatic = function(windDirectionIntensity){

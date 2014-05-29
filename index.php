@@ -43,14 +43,15 @@
 		var environment = new Environment();
 
 		//environment.drawCulm(200,400);
-		//Environment.getCulms()[0].moveStatic(-0.9);
+		//Environment.getCulms()[0].moveStatic(-0.22);
+		//Environment.getCulms()[0].setAnimationFrames(-0.22);
 		
 
 		environment.drawLawn();
 		//environment.developMode();
 		//environment.prepareEndlessDrawingAreaX();
 		//environment.moveRight();
-		//environment.makeWind();
+		environment.makeWind();
 	</script>
 </body>
 </html>

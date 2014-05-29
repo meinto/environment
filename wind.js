@@ -94,7 +94,7 @@ function GustOfWind(direction, intensity, speed) {
 	};
 
 	function doTheGust(){
-		tempCulms[culmNr].move(_this.intensity * _this.direction, 500);
+		tempCulms[culmNr].move(_this.intensity, _this.direction, 500);
 
 		if(_this.direction > 0)
 			culmNr++;
