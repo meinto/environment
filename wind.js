@@ -2,8 +2,8 @@ function Wind(){
 
 	var direction = 1;
 
-	var intensityMax = 0.22;
-	var intensityMin = 0.02;
+	var intensityMax = 100;
+	var intensityMin = 10;
 	var intensity = randomBetweenExact(intensityMin, intensityMax);
 
 	var speedMax = 20;
@@ -44,7 +44,7 @@ function Wind(){
 	};
 
 	this.setIntensityAndSpeed = function(){
-		var variance = randomBetweenExact(-0.005,0.005);
+		var variance = randomBetweenExact(-5,5);
 		if((intensity+variance) < intensityMax && (intensity+variance) > intensityMin)
 			intensity += variance;
 		$('#wind-intensity').html(Math.floor(1000/intensityMax*intensity)/10);

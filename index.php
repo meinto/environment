@@ -43,7 +43,8 @@
 		var environment = new Environment();
 
 		//environment.drawCulm(200,400);
-		//Environment.getCulms()[0].moveStatic(-0.22);
+		//Environment.getCulms()[0].drawAnimationCurve();
+		//Environment.getCulms()[0].moveStatic(100);
 		//Environment.getCulms()[0].setAnimationFrames(-0.22);
 		
 

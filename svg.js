@@ -29,7 +29,7 @@ window.requestAnimFrame = (function(){
  ********************************************/
 function SVG(id){
 	if(!!id) this.setDrawingArea(id);
-}
+};
 
 /********************************************
  *	prototype : svg
@@ -59,7 +59,7 @@ SVG.prototype = {
 		if(this.type == 'svg')
 			return p;
 	}
-}
+};
 
 /* 
 ###################################################################### 
@@ -72,7 +72,7 @@ SVG.prototype = {
 function Path(drawingArea){
 	if(!!drawingArea) this.drawingArea = drawingArea;
 	Path.count++;
-}
+};
 Path.count = 0;
 
 /********************************************
@@ -100,12 +100,14 @@ Path.prototype.draw = function(){
 	p.setAttributeNS(null, 'd', this.pathString);
 	
 	if(newPath){
-		p.setAttributeNS(null, 'fill', this.attrs.fill);
+		$.each(this.attrs, function(key, val){
+			p.setAttributeNS(null, key, val);
+		});
 		p.setAttributeNS(null, 'id', this._id);
 		this.drawingArea.appendChild(p);
 		return this;
 	}
-}
+};
 
 /* 
 ###################################################################### 
