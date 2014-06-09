@@ -10,8 +10,8 @@ function Culm(x, y) {
             //if(getAnimationPoint(_this.currentAnimation_x) > _this.anim_a)
                // console.log(getAnimationPoint(_this.currentAnimation_x));
             //__this.obj.path(getPath(getAnimationPoint(_this.currentAnimation_x)));
-            _this.currentAnimation_y = _this.getPath(_this.getAnimationPoint(_this.currentAnimation_x));
-            _this.obj.path(_this.currentAnimation_y);
+            _this.currentAnimation_y = _this.getAnimationPoint(_this.currentAnimation_x);
+            _this.obj.path(_this.getPath(_this.currentAnimation_y));
             if(_this.currentAnimation_x < 100){
                 _this.currentAnimation_x = _this.currentAnimation_x + _this.anim_speed;
             }
@@ -35,7 +35,7 @@ Culm.prototype.anim_a = 100;
 Culm.prototype.anim_b = 10;
 Culm.prototype.anim_c = 0;
 Culm.prototype.anim_d = 0;
-Culm.prototype.anim_speed = 0.5;
+Culm.prototype.anim_speed = 0.01;
 Culm.prototype.anim_inCalculation = false;
 
 Culm.prototype.recalculateCurrentAnimation_x = function(){
@@ -43,7 +43,55 @@ Culm.prototype.recalculateCurrentAnimation_x = function(){
         this.currentAnimation_x = 0;
     }else{
 
-        this.currentAnimation_x = 0;
+        var 
+            firstAfterNull = false,
+            firstBeforeNull = false, 
+            fan = 0,
+            fan_tmp = 0,
+            fan_stop = false,
+            fbn = 0,
+            fbn_tmp = 0,
+            fbn_stop = false,
+            xia = 0, 
+            xib = 0,
+            stop = false,
+            _this = this; 
+
+        // function calc() {
+        //     xib = xib - 0.05;
+        //     xia = xia + 0.05;
+        //     fbn = _this.getAnimationPoint(xib);
+        //     fan = _this.getAnimationPoint(xia);
+
+        //     alert(fbn+' '+fan+' ## '+_this.currentAnimation_y);
+
+        //     if(Math.abs(fan) > Math.abs(_this.currentAnimation_y) || Math.abs(fbn) > Math.abs(_this.currentAnimation_y)){
+        //         stop = true;
+        //     }else{
+        //         fan_tmp = fan;
+        //         fbn_tmp = fbn;
+        //     }
+        //     requestAnimationFrame(calc);
+        // }
+        // requestAnimationFrame(calc);
+
+        while(!stop){
+            xib = xib - 0.5;
+            xia = xia + 0.5;
+            fbn = this.getAnimationPoint(xib);
+            fan = this.getAnimationPoint(xia);
+
+            if(Math.abs(fan) > Math.abs(this.currentAnimation_y) || Math.abs(fbn) > Math.abs(this.currentAnimation_y)){
+                stop = true;
+            }else{
+                fan_tmp = fan;
+                fbn_tmp = fbn;
+            }
+        }
+
+        this.currentAnimation_x = xia;
+        if(Math.abs(this.currentAnimation_y - fan_tmp) > Math.abs(this.currentAnimation_y - fbn_tmp))
+            this.currentAnimation_x = xib;
 
         // var new_x = (Math.asin(
         //                 ((Math.PI / this.anim_b) * this.currentAnimation_x - this.anim_d) /
