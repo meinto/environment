@@ -35,27 +35,23 @@ Culm.prototype.anim_a = 100;
 Culm.prototype.anim_b = 10;
 Culm.prototype.anim_c = 0;
 Culm.prototype.anim_d = 0;
-Culm.prototype.anim_speed = 0.01;
+Culm.prototype.anim_speed = 0.5;
 Culm.prototype.anim_inCalculation = false;
 
 Culm.prototype.recalculateCurrentAnimation_x = function(){
-    if(this.currentAnimation_x == null || this.currentAnimation_x > 10){
+    if(this.currentAnimation_x == null || this.currentAnimation_x > 100){
         this.currentAnimation_x = 0;
     }else{
 
         var 
-            firstAfterNull = false,
-            firstBeforeNull = false, 
             fan = 0,
-            fan_tmp = 0,
-            fan_stop = false,
+            fan_final_x = false,
             fbn = 0,
-            fbn_tmp = 0,
-            fbn_stop = false,
-            xia = 0, 
+            xia = 0,
+            xia_add = 1, 
             xib = 0,
-            stop = false,
-            _this = this; 
+            xib_add = -1,
+            stop = false; 
 
         // function calc() {
         //     xib = xib - 0.05;
@@ -76,22 +72,50 @@ Culm.prototype.recalculateCurrentAnimation_x = function(){
         // requestAnimationFrame(calc);
 
         while(!stop){
-            xib = xib - 0.5;
-            xia = xia + 0.5;
+            xib = xib + xib_add;
+            xia = xia + xia_add;
             fbn = this.getAnimationPoint(xib);
             fan = this.getAnimationPoint(xia);
 
-            if(Math.abs(fan) > Math.abs(this.currentAnimation_y) || Math.abs(fbn) > Math.abs(this.currentAnimation_y)){
+            //alert(fbn+' '+fan+' '+this.currentAnimation_y);
+
+            if(Math.ceil(fbn*10) == Math.ceil(this.currentAnimation_y*10)){
                 stop = true;
-            }else{
-                fan_tmp = fan;
-                fbn_tmp = fbn;
+            }
+
+            if(Math.ceil(fan*10) == Math.ceil(this.currentAnimation_y*10) && fan_final_x === false){
+                fan_final_x = xia;
+            }
+
+            if(
+                (
+                    (this.currentAnimation_y > 0 && fbn > this.currentAnimation_y) ||
+                    (this.currentAnimation_y < 0 && fbn < this.currentAnimation_y) 
+                ) &&
+                !stop
+            ){
+                xib = xib - xib_add;
+                xib_add = xib_add / 2;
+            }
+
+            if(
+                fan_final_x === false &&
+                !stop &&
+                (
+                    (this.currentAnimation_y > 0 && fan > this.currentAnimation_y) ||
+                    (this.currentAnimation_y < 0 && fan < this.currentAnimation_y) 
+                )
+            ){
+                xia = xia - xia_add;
+                xia_add = xia_add / 2;
             }
         }
 
-        this.currentAnimation_x = xia;
-        if(Math.abs(this.currentAnimation_y - fan_tmp) > Math.abs(this.currentAnimation_y - fbn_tmp))
-            this.currentAnimation_x = xib;
+        // console.log(Math.ceil(fan_final_x*10)+' '+Math.ceil(xib*10)+' '+Math.ceil(this.currentAnimation_x*10));
+
+        this.currentAnimation_x = fan_final_x;
+        if(fan_final_x === false || (0 + xib) > (0 - fan_final_x)) this.currentAnimation_x = xib;
+
 
         // var new_x = (Math.asin(
         //                 ((Math.PI / this.anim_b) * this.currentAnimation_x - this.anim_d) /
