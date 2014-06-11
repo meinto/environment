@@ -1,160 +1,117 @@
+
 function Environment(){
+	Environment.self = this;
+};
 
-	// enviromnent parameter
+Environment.windowWidth = $(window).width();
+Environment.windowHeight = $(window).height();
+Environment.self = null;
+Environment.redrawLawn = function(){
+	var mostRightCulm_x = Environment.self.culms[Environment.self.culms.length-1].getX();
 
-	var windowWidth = $(window).width();
-	var windowHeight = $(window).height();
+	if(mostRightCulm_x > this.windowWidth){
+		Environment.self.removeCulmFromLawn();
+	}
 
-	var drawingAreaId = 'environment';
+	if(mostRightCulm_x < this.windowWidth){
+		Environment.self.pushCulmToLawn();
+	}
+};
+Environment.getDrawingArea = function(){
+	if(!Environment.self.drawingArea){
+		Environment.self.drawingArea = new SVG(Environment.self.drawingAreaId);
+	}
+	return Environment.self.drawingArea;
+};
+Environment.getCulms = function(){
+	return Environment.self.culms;
+};
+
+Environment.prototype = {
+
+	drawingAreaId : 'environment',
 	
 	// should only be manipulated via getter and setter methods
-	var drawingArea, drawingArea_right, drawingArea_left;
+	drawingArea : null, 
+	drawingArea_right : null, 
+	drawingArea_left : null,
 
 	// Lawn
-	var culmStartingPointVarianz_x = 40;
-	var culmStartingPointVarianz_y = 40;
-	var culmDistance = 5;
-	var firstCulmStartingPoint_x = 0;
-	var firstCulmStartingPoint_y = windowHeight-40;
-	var numberOfDynamicCulmsOnLawn = 100;
+	culmStartingPointVarianz_x : 40,
+	culmStartingPointVarianz_y : 40,
+	culmDistance : 5,
+	firstCulmStartingPoint_x : 0,
+	firstCulmStartingPoint_y : Environment.windowHeight-40,
+	numberOfDynamicCulmsOnLawn : 100,
 
+	wind : null,
+	culms : [],
 
-
-	// 
-	var wind;
-	var culms = [];
-	var _this = this;
-
-	/*
-	 *	private functions
-	 */
-	$(window).resize(function(){
-		windowWidth = $(window).width();
-		windowHeight = $(window).height();
-		redrawLawn();
-	});
-
-	function redrawLawn(){
-		var mostRightCulm_x = culms[culms.length-1].getX();
-
-		if(mostRightCulm_x > windowWidth){
-			removeCulmFromLawn();
+	pushCulmToLawn : function(){
+		var x = this.firstCulmStartingPoint_x+(this.culmDistance*this.culms.length)+randomBetween(0,this.culmStartingPointVarianz_x);
+		var y = this.firstCulmStartingPoint_y+randomBetween(0,this.culmStartingPointVarianz_y);
+		this.createCulm(x,y);
+		var mostRightCulm_x = this.culms[this.culms.length-1].getX();
+		if(mostRightCulm_x < Environment.windowWidth){
+			this.pushCulmToLawn();
 		}
+	},
 
-		if(mostRightCulm_x < windowWidth){
-			pushCulmToLawn();
+	removeCulmFromLawn : function(){
+		this.culms[this.culms.length-1].obj.remove();
+		this.culms[this.culms.length-1].obj.delete();
+		delete this.culms[this.culms.length-1].obj;
+		this.culms.splice(this.culms.length-1,1);
+		var mostRightCulm_x = this.culms[this.culms.length-1].getX();
+		if(mostRightCulm_x > Environment.windowWidth){
+			this.removeCulmFromLawn();
 		}
-	}
+	},
 
-	function pushCulmToLawn(){
-		var x = firstCulmStartingPoint_x+(culmDistance*culms.length)+randomBetween(0,culmStartingPointVarianz_x);
-		var y = firstCulmStartingPoint_y+randomBetween(0,culmStartingPointVarianz_y);
-		createCulm(x,y);
-		var mostRightCulm_x = culms[culms.length-1].getX();
-		if(mostRightCulm_x < windowWidth){
-			pushCulmToLawn();
+	createCulm : function(x,y){
+		this.culms[this.culms.length] = new Culm(x,y);
+	},
+
+	setDrawingArea : function(customDrawingAreaId){
+		this.drawingAreaId = customDrawingAreaId;
+		if(!!this.drawingAreaId){
+			this.drawingArea = new Snap(this.drawingAreaId);
+			this.firstCulmStartingPoint_y = $(this.drawingArea.node).outerHeight() - 60;
 		}
-	}
+	},
 
-	function removeCulmFromLawn(){
-		culms[culms.length-1].obj.remove();
-		culms[culms.length-1].obj.delete();
-		delete culms[culms.length-1].obj;
-		culms.splice(culms.length-1,1);
-		var mostRightCulm_x = culms[culms.length-1].getX();
-		if(mostRightCulm_x > windowWidth){
-			removeCulmFromLawn();
-		}
-	}
+	makeWind : function(){
+		this.wind = new Wind();
+	},
 
-	function createCulm(x,y){
-		culms[culms.length] = new Culm(x,y);
-	};
-	
-	/*
-	 *	object functions
-	 */
-	this.setDrawingArea = function(customDrawingAreaId){
-		drawingAreaId = customDrawingAreaId;
-		if(!!drawingAreaId){
-			drawingArea = new Snap(drawingAreaId);
-			firstCulmStartingPoint_y = $(drawingArea.node).outerHeight() - 60;
-		}
-	}
+	stoppWind : function(){
+		this.wind.stopIt();
+	},
 
-	/*
-	 *		TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	 */
-	// this.prepareEndlessDrawingAreaX = function(){
-	// 	var wrapper = $('<div class="environmentWrapper"></div>');
-	// 	wrapper.css({
-	// 		width:$(drawingAreaId).css('width'),
-	// 		height:$(drawingAreaId).css('height'),
-	// 		position:'relative',
-	// 	});
-	// 	$(drawingAreaId).wrap(wrapper);
-	// 	var leftPart = $('<div class="left-part"></div>');
-	// 	var rightPart = $('<div class="right-part"></div>');
-	// 	var css = {
-	// 		position:'absolute',
+	drawCulm : function(startX, startY){
+		this.createCulm(startX,startY);
+	},
 
-	// 	}
-	// 	$(drawingAreaId).before(leftPart);
-	// 	$(drawingAreaId).after(rightPart);
-	// }
-
-	this.makeWind = function(){
-		wind = new Wind();
-	}
-
-	this.stoppWind = function(){
-		wind.stopIt();
-	}
-	
-	this.drawCulm = function(startX, startY){
-		createCulm(startX,startY);
-	}
-
-	this.drawLawn = function(startX, startY, single){
+	drawLawn : function(startX, startY, single){
 		if(!!startX)
-			firstCulmStartingPoint_x = startX;
+			this.firstCulmStartingPoint_x = startX;
 		if(!!startY)
-			firstCulmStartingPoint_y = startY;
+			this.firstCulmStartingPoint_y = startY;
 		if(!!single)
-			createCulm(startX,startY);
+			this.createCulm(startX,startY);
 		else
-			pushCulmToLawn();
-	}
+			this.pushCulmToLawn();
+	},
 
-	/* 
-	 * global functions
-	 */
-	Environment.getDrawingArea = function(){
-		if(!drawingArea){
-			drawingArea = new SVG(drawingAreaId);
-		}
-		return drawingArea;
-	};
-
-	Environment.getCulms = function(){
-		return culms;
-	};
-
-	// this.stopMoving = function(){
-
-	// };
-
-	// this.moveRight = function(){
-	// 	var drawingAreaWidth = $(drawingAreaId).css('width');
-	// 	var drawingAreaMargin = $(drawingAreaId).css('margin-left');
-	// 	$(drawingAreaId).animate({width:"+=500", marginLeft:"-=500"}, 20000, 'linear', function(){
-	// 		_this.moveRight();
-	// 	});
-	// };
-
-	this.developMode = function(){
-        $.each(culms, function(index, object){
+	developMode : function(){
+        $.each(this.culms, function(index, object){
         	object.developMode();
         });
-    };
-}
+    }
+};
+
+$(window).resize(function(){
+	Environment.windowWidth = $(window).width();
+	Environment.windowHeight = $(window).height();
+	Environment.redrawLawn();
+});

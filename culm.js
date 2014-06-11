@@ -7,12 +7,9 @@ function Culm(x, y) {
 
     function animate(){
         if(!_this.anim_inCalculation && _this.currentAnimation_x != null){
-            //if(getAnimationPoint(_this.currentAnimation_x) > _this.anim_a)
-               // console.log(getAnimationPoint(_this.currentAnimation_x));
-            //__this.obj.path(getPath(getAnimationPoint(_this.currentAnimation_x)));
             _this.currentAnimation_y = _this.getAnimationPoint(_this.currentAnimation_x);
             _this.obj.path(_this.getPath(_this.currentAnimation_y));
-            if(_this.currentAnimation_x < 100){
+            if(_this.currentAnimation_x < _this.anim_duration){
                 _this.currentAnimation_x = _this.currentAnimation_x + _this.anim_speed;
             }
         }
@@ -36,10 +33,11 @@ Culm.prototype.anim_b = 10;
 Culm.prototype.anim_c = 0;
 Culm.prototype.anim_d = 0;
 Culm.prototype.anim_speed = 0.5;
+Culm.prototype.anim_duration = 100;
 Culm.prototype.anim_inCalculation = false;
 
 Culm.prototype.recalculateCurrentAnimation_x = function(){
-    if(this.currentAnimation_x == null || this.currentAnimation_x > 100){
+    if(this.currentAnimation_x == null || this.currentAnimation_x > this.anim_duration){
         this.currentAnimation_x = 0;
     }else{
 
@@ -52,24 +50,6 @@ Culm.prototype.recalculateCurrentAnimation_x = function(){
             xib = 0,
             xib_add = -1,
             stop = false; 
-
-        // function calc() {
-        //     xib = xib - 0.05;
-        //     xia = xia + 0.05;
-        //     fbn = _this.getAnimationPoint(xib);
-        //     fan = _this.getAnimationPoint(xia);
-
-        //     alert(fbn+' '+fan+' ## '+_this.currentAnimation_y);
-
-        //     if(Math.abs(fan) > Math.abs(_this.currentAnimation_y) || Math.abs(fbn) > Math.abs(_this.currentAnimation_y)){
-        //         stop = true;
-        //     }else{
-        //         fan_tmp = fan;
-        //         fbn_tmp = fbn;
-        //     }
-        //     requestAnimationFrame(calc);
-        // }
-        // requestAnimationFrame(calc);
 
         while(!stop){
             xib = xib + xib_add;
@@ -111,24 +91,8 @@ Culm.prototype.recalculateCurrentAnimation_x = function(){
             }
         }
 
-        // console.log(Math.ceil(fan_final_x*10)+' '+Math.ceil(xib*10)+' '+Math.ceil(this.currentAnimation_x*10));
-
         this.currentAnimation_x = fan_final_x;
         if(fan_final_x === false || (0 + xib) > (0 - fan_final_x)) this.currentAnimation_x = xib;
-
-
-        // var new_x = (Math.asin(
-        //                 ((Math.PI / this.anim_b) * this.currentAnimation_x - this.anim_d) /
-        //                 this.anim_sign * (Math.pow(2, -(this.currentAnimation_x/10)) * this.anim_a)
-        //             ) + this.anim_c) / this.anim_b;
-
-        // console.log(new_x);
-
-        // if(new_x > 1/this.anim_b)
-        //     new_x = new_x - 1/this.anim_b;
-
-        // this.currentAnimation_x = new_x;
-        // new_x = null;
     }
 };
 
@@ -137,9 +101,6 @@ Culm.prototype.recalculateAnimParams = function(sign, a){
 
     this.anim_sign = -sign;
     this.anim_a = a;
-    // anim_b = b;
-    // anim_c = c;
-    // anim_d = d;
 
     this.recalculateCurrentAnimation_x();
 
