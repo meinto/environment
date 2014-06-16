@@ -29,30 +29,33 @@
 		</div>
 	</div>
 	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
-	<script type="text/javascript" src="snap.svg-min.js"></script>
 	<script type="text/javascript" src="svg.js"></script>
 	<script type="text/javascript" src="helper.js"></script>
 	<script type="text/javascript" src="environment.js"></script>
 	<script type="text/javascript" src="culm.js"></script>
 	<script type="text/javascript" src="wind.js"></script>
+	<script type="text/javascript" src="showcase.js"></script>
 	<script type="text/javascript">
 		//var svg = new SVG('asd');
 		//console.log(svg.drawingArea);
 		//svg.path('M62,645C61.008497846742834,575.4396623292718,58.1065202958578,535.6658320480066,60.10323101342054,451.2962940153623C61.33429807363557,535.6658320480066,66.2362756245206,575.4396623292718,62,645');
 
-		var environment = new Environment();
+		// var environment = new Environment();
 
-		//environment.drawCulm(200,400);
+		// environment.drawCulm(200,400);
 		//Environment.getCulms()[0].drawAnimationCurve();
 		//Environment.getCulms()[0].moveStatic(100);
 		//Environment.getCulms()[0].setAnimationFrames(-0.22);
 		
 
-		environment.drawLawn();
+		// environment.drawLawn();
 		//environment.developMode();
 		//environment.prepareEndlessDrawingAreaX();
 		//environment.moveRight();
-		environment.makeWind();
+		// environment.makeWind();
+
+		var showcase = new Showcase();
+		showcase.culmAnimation(400,600);
 	</script>
 </body>
 </html>

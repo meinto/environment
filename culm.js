@@ -1,4 +1,4 @@
-function Culm(x, y) {
+function Culm(x, y, drawingAreaId) {
     this.initX = x;
     this.initY = y;
     this.minHeight = this.maxHeight / 1.2;
@@ -6,6 +6,7 @@ function Culm(x, y) {
     var _this = this;
 
     function animate(){
+        if(_this.anim_inCalculation) console.log(1);
         if(!_this.anim_inCalculation && _this.currentAnimation_x != null){
             _this.currentAnimation_y = _this.getAnimationPoint(_this.currentAnimation_x);
             _this.obj.path(_this.getPath(_this.currentAnimation_y));
@@ -15,8 +16,14 @@ function Culm(x, y) {
         }
         requestAnimationFrame(animate);
     };
+    if(!drawingAreaId){
+        this.obj = Environment.getDrawingArea().path(this.getPath());
+    }else{
+        this.setDrawingArea(drawingAreaId);
+        this.obj = this.path(this.getPath());
+    }
+
     requestAnimationFrame(animate);
-    this.obj = Environment.getDrawingArea().path(this.getPath());
 };
 
 /********************************************
@@ -35,6 +42,9 @@ Culm.prototype.anim_d = 0;
 Culm.prototype.anim_speed = 0.5;
 Culm.prototype.anim_duration = 100;
 Culm.prototype.anim_inCalculation = false;
+
+//Culm.prototype.startAnimation = function() { this.currentAnimation_x = 0; };
+Culm.prototype.setAnimationSpeed = function(speed){ this.anim_speed = speed; };
 
 Culm.prototype.recalculateCurrentAnimation_x = function(){
     if(this.currentAnimation_x == null || this.currentAnimation_x > this.anim_duration){
@@ -119,20 +129,6 @@ Culm.prototype.getAnimationPoint = function(x){
     return point;
 };
 
-Culm.prototype.drawAnimationCurve = function(){
-    var p = 'M500,500 ';
-    for(var point = 0; point < 100; point = point+1){
-        p = p+'L'+(500+(this.getAnimationPoint(point)))+','+(500-(point))+' ';
-    }
-    for(var point = 100; point > 0; point = point-1){
-        p = p+'L'+(500+(this.getAnimationPoint(point)))+','+(500-(point))+' ';
-    }
-    Environment.getDrawingArea().path(p, {
-        'stroke-width' : '2',
-        'stroke' : 'black'
-    });
-};
-
 Culm.prototype.move = function(windIntensity, windDirection, animationTime) {
         this.recalculateAnimParams(windDirection, windIntensity);
 };
@@ -151,6 +147,7 @@ Culm.prototype.thickness2 = 0;
 
 Culm.prototype.getX = function(){ return this.initX; };
 Culm.prototype.getY = function(){ return this.initY; };
+Culm.prototype.getHeight = function(){ return -this.initUy; }
 
 Culm.prototype.getPath = function(windDirectionIntensity) {
 
